@@ -1,1 +1,321 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Philoo Rover</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --philoo-blue: #0EB5ED;
+      --philoo-dark: #0A8FBD;
+      --philoo-gold: #D4AF37;
+      --bg: #FAFBFD;
+      --card-bg: #FFFFFF;
+      --text-secondary: #6B7C93;
+      --text-dark: #1A2B3D;
+    }
 
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Nunito', sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image: 
+        radial-gradient(circle at 1px 1px, rgba(14,181,237,0.04) 1px, transparent 0);
+      background-size: 32px 32px;
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .container {
+      position: relative;
+      z-index: 1;
+      max-width: 520px;
+      width: 100%;
+      padding: 0 32px;
+    }
+
+    /* Header */
+    header {
+      text-align: center;
+      padding: 56px 0 44px;
+    }
+
+    .logo-main {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+    }
+
+    .logo-icon {
+      width: 56px;
+      height: 56px;
+      border-radius: 22%;
+      overflow: hidden;
+      box-shadow: 0 4px 16px rgba(14,181,237,0.3);
+      flex-shrink: 0;
+      background: var(--bg);
+    }
+
+    .logo-icon img { width: 100%; height: 100%; object-fit: cover; }
+
+    .logo-text {
+      font-size: 48px;
+      font-weight: 900;
+      color: var(--philoo-blue);
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .logo-sub {
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--philoo-dark);
+      letter-spacing: 7px;
+      text-transform: uppercase;
+      opacity: 0.6;
+      margin-top: 6px;
+      text-align: center;
+    }
+
+    .logo-divider {
+      width: 48px;
+      height: 3px;
+      background: linear-gradient(90deg, var(--philoo-blue), var(--philoo-gold));
+      border-radius: 2px;
+      margin: 18px auto 0;
+    }
+
+    /* Grid */
+    .tools-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+
+    /* Card */
+    .tool-card {
+      background: var(--card-bg);
+      border: 2px solid transparent;
+      border-radius: 20px;
+      padding: 40px 20px 30px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 16px;
+      text-decoration: none;
+      transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.04), 0 6px 20px rgba(0,0,0,0.03);
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .tool-card::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(14,181,237,0.04), transparent);
+      opacity: 0;
+      transition: opacity 0.25s;
+    }
+
+    .tool-card:hover {
+      border-color: var(--philoo-blue);
+      transform: translateY(-5px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.04), 0 16px 40px rgba(14,181,237,0.15);
+    }
+
+    .tool-card:hover::after { opacity: 1; }
+    .tool-card:hover .tool-icon-box { transform: scale(1.1); }
+
+    /* Touch feedback for mobile */
+    .tool-card:active {
+      transform: scale(0.97);
+      transition-duration: 0.1s;
+    }
+
+    .tool-icon-box {
+      width: 64px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+      position: relative;
+      z-index: 1;
+    }
+
+    .tool-icon-box svg { width: 56px; height: 56px; }
+
+    .tool-name {
+      font-size: 16px;
+      font-weight: 800;
+      color: var(--text-dark);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+    }
+
+    .tool-desc {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      text-align: center;
+      position: relative;
+      z-index: 1;
+      margin-top: -8px;
+      line-height: 1.3;
+    }
+
+    /* Animations */
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    header { animation: fadeUp 0.6s ease-out; }
+    .tool-card { animation: fadeUp 0.5s ease-out both; }
+    .tool-card:nth-child(1) { animation-delay: 0.1s; }
+    .tool-card:nth-child(2) { animation-delay: 0.2s; }
+
+    /* ===== iPhone 16 / mobile (393px) ===== */
+    @media (max-width: 480px) {
+      .container {
+        padding: 0 20px;
+      }
+
+      header {
+        padding: 44px 0 36px;
+      }
+
+      .logo-icon {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+      }
+
+      .logo-text {
+        font-size: 40px;
+      }
+
+      .logo-sub {
+        font-size: 13px;
+        letter-spacing: 6px;
+      }
+
+      .tools-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+      }
+
+      .tool-card {
+        padding: 32px 16px 24px;
+        border-radius: 18px;
+      }
+
+      .tool-icon-box {
+        width: 56px;
+        height: 56px;
+      }
+
+      .tool-icon-box svg {
+        width: 48px;
+        height: 48px;
+      }
+
+      .tool-name {
+        font-size: 14px;
+      }
+
+      .tool-desc {
+        font-size: 11px;
+      }
+    }
+
+    /* ===== Very small screens ===== */
+    @media (max-width: 340px) {
+      .container {
+        padding: 0 16px;
+      }
+
+      .tools-grid {
+        gap: 10px;
+      }
+
+      .tool-card {
+        padding: 24px 12px 20px;
+      }
+
+      .logo-text {
+        font-size: 34px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="logo-main">
+        <div class="logo-icon">
+          <img src="philooapp.png" alt="Philoo">
+        </div>
+        <span class="logo-text">Philoo</span>
+      </div>
+      <div class="logo-sub">Rover</div>
+      <div class="logo-divider"></div>
+    </header>
+
+    <div class="tools-grid">
+      <!-- Figma -->
+      <a href="https://www.figma.com/design/hWkuzfs0HblTjZdvgslKpl/PHILOO?node-id=0-1&p=f&t=0ZEmhLlH8Kj82OWC-0" target="_blank" class="tool-card">
+        <div class="tool-icon-box">
+          <svg viewBox="0 0 38 57" xmlns="http://www.w3.org/2000/svg">
+            <path d="M19 28.5a9.5 9.5 0 1 1 19 0 9.5 9.5 0 0 1-19 0z" fill="#1ABCFE"/>
+            <path d="M0 47.5A9.5 9.5 0 0 1 9.5 38H19v9.5a9.5 9.5 0 1 1-19 0z" fill="#0ACF83"/>
+            <path d="M19 0v19h9.5a9.5 9.5 0 1 0 0-19H19z" fill="#FF7262"/>
+            <path d="M0 9.5A9.5 9.5 0 0 0 9.5 19H19V0H9.5A9.5 9.5 0 0 0 0 9.5z" fill="#F24E1E"/>
+            <path d="M0 28.5A9.5 9.5 0 0 0 9.5 38H19V19H9.5A9.5 9.5 0 0 0 0 28.5z" fill="#A259FF"/>
+          </svg>
+        </div>
+        <span class="tool-name">Figma</span>
+        <span class="tool-desc">Design & produto</span>
+      </a>
+
+      <!-- Google Sheets -->
+      <a href="https://docs.google.com/spreadsheets/d/1DPn6bTUifKuU8LehDOlkqXJobTdNQTP8CRel8rIBmU4/edit?gid=0#gid=0" target="_blank" class="tool-card">
+        <div class="tool-icon-box">
+          <svg viewBox="0 0 48 66" xmlns="http://www.w3.org/2000/svg">
+            <path d="M29 0H6a6 6 0 0 0-6 6v54a6 6 0 0 0 6 6h36a6 6 0 0 0 6-6V19L29 0z" fill="#0F9D58"/>
+            <path d="M29 0v19h19L29 0z" fill="#87CEAC"/>
+            <path d="M10 32h28v24H10V32z" fill="#F1F1F1"/>
+            <path d="M10 32h28v4H10v-4z" fill="#FFFFFF"/>
+            <path d="M10 40h28v4H10v-4z" fill="#FFFFFF"/>
+            <path d="M10 48h28v4H10v-4z" fill="#FFFFFF"/>
+            <path d="M22 32h2v24h-2V32z" fill="#0F9D58" opacity="0.3"/>
+          </svg>
+        </div>
+        <span class="tool-name">Google Sheets</span>
+        <span class="tool-desc">Dados & prospecção</span>
+      </a>
+    </div>
+  </div>
+</body>
+</html>
